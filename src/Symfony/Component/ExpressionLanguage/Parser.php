@@ -86,7 +86,7 @@ class Parser
      * but the compiled code will use 'this'.
      *
      * @param TokenStream $stream A token stream instance
-     * @param array       $names  An array of valid names
+     * @param array       $names  An array of name substitutes
      *
      * @return Node A node tree
      *
@@ -200,13 +200,11 @@ class Parser
 
                             $node = new Node\FunctionNode($token->value, $this->parseArguments());
                         } else {
-                            if (!in_array($token->value, $this->names, true)) {
-                                throw new SyntaxError(sprintf('Variable "%s" is not valid', $token->value), $token->cursor);
-                            }
-
                             // is the name used in the compiled code different
                             // from the name used in the expression?
-                            if (is_int($name = array_search($token->value, $this->names))) {
+                            $name = array_search($token->value, $this->names);
+
+                            if (is_int($name) || $name === false) {
                                 $name = $token->value;
                             }
 

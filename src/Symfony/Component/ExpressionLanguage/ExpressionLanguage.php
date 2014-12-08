@@ -48,7 +48,7 @@ class ExpressionLanguage
      * Compiles an expression source code.
      *
      * @param Expression|string $expression The expression to compile
-     * @param array             $names      An array of valid names
+     * @param array             $names      An array of name substitutes
      *
      * @return string The compiled PHP source code
      */
@@ -67,18 +67,18 @@ class ExpressionLanguage
      */
     public function evaluate($expression, $values = array())
     {
-        return $this->parse($expression, array_keys($values))->getNodes()->evaluate($this->functions, $values);
+        return $this->parse($expression)->getNodes()->evaluate($this->functions, $values);
     }
 
     /**
      * Parses an expression.
      *
      * @param Expression|string $expression The expression to parse
-     * @param array             $names      An array of valid names
+     * @param array             $names      An array of name substitutes
      *
      * @return ParsedExpression A ParsedExpression instance
      */
-    public function parse($expression, $names)
+    public function parse($expression, $names = array())
     {
         if ($expression instanceof ParsedExpression) {
             return $expression;

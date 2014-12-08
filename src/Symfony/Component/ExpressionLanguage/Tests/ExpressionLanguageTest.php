@@ -74,11 +74,11 @@ class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider shortCircuitProviderCompile
      */
-    public function testShortCircuitOperatorsCompile($expression, array $names, $expected)
+    public function testShortCircuitOperatorsCompile($expression, $expected)
     {
         $result = null;
         $expressionLanguage = new ExpressionLanguage();
-        eval(sprintf('$result = %s;', $expressionLanguage->compile($expression, $names)));
+        eval(sprintf('$result = %s;', $expressionLanguage->compile($expression)));
         $this->assertSame($expected, $result);
     }
 
@@ -98,10 +98,10 @@ class ExpressionLanguageTest extends \PHPUnit_Framework_TestCase
     public function shortCircuitProviderCompile()
     {
         return array(
-            array('false and foo', array('foo' => 'foo'), false),
-            array('false && foo', array('foo' => 'foo'), false),
-            array('true || foo', array('foo' => 'foo'), true),
-            array('true or foo', array('foo' => 'foo'), true),
+            array('false and foo', false),
+            array('false && foo', false),
+            array('true || foo', true),
+            array('true or foo', true),
         );
     }
 }

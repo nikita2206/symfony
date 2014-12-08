@@ -18,28 +18,6 @@ use Symfony\Component\ExpressionLanguage\Node;
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException        \Symfony\Component\ExpressionLanguage\SyntaxError
-     * @expectedExceptionMessage Variable "foo" is not valid around position 1.
-     */
-    public function testParseWithInvalidName()
-    {
-        $lexer = new Lexer();
-        $parser = new Parser(array());
-        $parser->parse($lexer->tokenize('foo'));
-    }
-
-    /**
-     * @expectedException        \Symfony\Component\ExpressionLanguage\SyntaxError
-     * @expectedExceptionMessage Variable "foo" is not valid around position 1.
-     */
-    public function testParseWithZeroInNames()
-    {
-        $lexer = new Lexer();
-        $parser = new Parser(array());
-        $parser->parse($lexer->tokenize('foo'), array(0));
-    }
-
-    /**
      * @dataProvider getParseData
      */
     public function testParse($node, $expression, $names = array())
@@ -60,7 +38,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             array(
                 new Node\NameNode('a'),
                 'a',
-                array('a'),
             ),
             array(
                 new Node\ConstantNode('a'),
@@ -100,17 +77,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             array(
                 new Node\GetAttrNode(new Node\NameNode('foo'), new Node\ConstantNode('bar'), new Node\ArgumentsNode(), Node\GetAttrNode::PROPERTY_CALL),
                 'foo.bar',
-                array('foo'),
             ),
             array(
                 new Node\GetAttrNode(new Node\NameNode('foo'), new Node\ConstantNode('bar'), new Node\ArgumentsNode(), Node\GetAttrNode::METHOD_CALL),
                 'foo.bar()',
-                array('foo'),
             ),
             array(
                 new Node\GetAttrNode(new Node\NameNode('foo'), new Node\ConstantNode('not'), new Node\ArgumentsNode(), Node\GetAttrNode::METHOD_CALL),
                 'foo.not()',
-                array('foo'),
             ),
             array(
                 new Node\GetAttrNode(
@@ -120,12 +94,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                     Node\GetAttrNode::METHOD_CALL
                 ),
                 'foo.bar("arg1", 2, true)',
-                array('foo'),
             ),
             array(
                 new Node\GetAttrNode(new Node\NameNode('foo'), new Node\ConstantNode(3), new Node\ArgumentsNode(), Node\GetAttrNode::ARRAY_CALL),
                 'foo[3]',
-                array('foo'),
             ),
             array(
                 new Node\ConditionalNode(new Node\ConstantNode(true), new Node\ConstantNode(true), new Node\ConstantNode(false)),
@@ -146,7 +118,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                         'baz', Node\GetAttrNode::PROPERTY_CALL),
                     '3', Node\GetAttrNode::ARRAY_CALL),
                 'foo.bar().foo().baz[3]',
-                array('foo'),
             ),
 
             array(
